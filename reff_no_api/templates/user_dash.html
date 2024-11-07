@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            User Dashboard
+        </h1>
+        <h3>
+            Total Count={{ user_structure.child_count }}
+        </h3>
+        <h4>
+            <a href="javascript:void(0);" id="shareButton" class="btn btn-danger w-100 fw-bold" style="background-color: #EE1D23;" onclick="copyToClipboard('{{user.unique_id}}')">
+                Share link
+
+            </a>
+        </h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Mobile No</th>
+                    <th scope="col">Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                {% for child in user_structure.child_branch.all %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ child.first_name }} {{ child.last_name }}</td>
+                    <td>{{ child.mobile_no }}</td>
+                    <td>{{ child.email }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        document.getElementById('shareButton').addEventListener('click', async () => {
+            const uniqueId = '{{ user.unique_id }}';
+            const shareData = {
+                title: 'Check this out!',
+                text: 'Use my referral link to Register in Youth Empower',
+                url: `https://www.youthempower.com/sign_up/${uniqueId}`
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                    console.log('Successfully shared');
+                } catch (error) {
+                    console.error('Error sharing:', error);
+                }
+            } else {
+                // Fallback for non-mobile browsers
+                const textToCopy = `${shareData.title}\n${shareData.text}\n${shareData.url}`;
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    alert('Link copied to clipboard! You can paste it anywhere.');
+                } catch (error) {
+                    console.error('Error copying to clipboard:', error);
+                    alert('Failed to copy the link.');
+                }
+            }
+        });
+    </script>
+{% endblock content %}
