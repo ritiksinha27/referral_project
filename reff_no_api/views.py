@@ -36,6 +36,9 @@ def user_dashboard(request):
 class user_register(View):
     def get(self, request,ref_id=None, *args, **kwargs):
         print(ref_id)
+        user=request.user
+        if user.is_authenticated:
+            logout(request)
         if ref_id:
             ref_user=CustomUser.objects.filter(unique_id=ref_id)
             if ref_user.exists():
@@ -67,8 +70,11 @@ class user_register(View):
 
 def admin_login(request):
     user=request.user
-    if user.is_authenticated:
+    if user.is_authenticated and user.groups.filter(name='admin').exists():
         return redirect('admin_dash')
+    elif user.is_authenticated:
+        logout(request)
+        return redirect('admin_login')
     if request.method == 'POST':
         username= request.POST.get('username')
         password= request.POST.get('password')

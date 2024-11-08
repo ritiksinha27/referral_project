@@ -8,6 +8,9 @@
         <h3>
             Total Count={{ user_structure.child_count }}
         </h3>
+        <h3>
+            Referred By: {{user_structure.ref_by_user_id.first_name}} {{user_structure.ref_by_user_id.last_name}}
+        </h3>
         <h4>
             <a href="javascript:void(0);" id="shareButton" class="btn btn-danger w-100 fw-bold" style="background-color: #EE1D23;" onclick="copyToClipboard('{{user.unique_id}}')">
                 Share link
