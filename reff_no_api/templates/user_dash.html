@@ -1,44 +1,113 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="container">
-        <h1>
-            User Dashboard
-        </h1>
-        <h3>
-            Total Count={{ user_structure.child_count }}
-        </h3>
-        <h3>
-            Referred By: {{user_structure.ref_by_user_id.first_name}} {{user_structure.ref_by_user_id.last_name}}
-        </h3>
-        <h4>
-            <a href="javascript:void(0);" id="shareButton" class="btn btn-danger w-100 fw-bold" style="background-color: #EE1D23;" onclick="copyToClipboard('{{user.unique_id}}')">
-                Share link
+<div class="container">
+    <div class="row gutters-sm">
+        <div class="col-md-4 mb-3">
+        <div class="card">
+            <div class="card-body">
+            <div class="d-flex flex-column align-items-center text-center">
+                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                <div class="mt-3">
+                <h4>{{user.first_name}} {{user.last_name}} </h4>
+                <h6>Points. {{user_structure.points}}</h6>
+                <a href="javascript:void(0);" id="shareButton" class="btn btn-info w-100 fw-bold" onclick="copyToClipboard('{{user.unique_id}}')">
+                    Share link
+                </a>
+                </div>
+            </div>
+            </div>
+        </div>
 
-            </a>
-        </h4>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Mobile No</th>
-                    <th scope="col">Email</th>
-                </tr>
-            </thead>
-            <tbody>
+        </div>
+        <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-body">
+            <div class="row">
+                <div class="col-sm-3">
+                <h6 class="mb-0">Full Name</h6>
+                </div>
+                <div class="col-sm-9 text-dark">
+                {{user.first_name}} {{user.last_name}}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                <h6 class="mb-0">Email</h6>
+                </div>
+                <div class="col-sm-9 text-dark">
+                {{user.email}}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                <h6 class="mb-0">Mobile No.</h6>
+                </div>
+                <div class="col-sm-9 text-dark">
+                {{user.mobile_no}}
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                <h6 class="mb-0">Child Counts</h6>
+                </div>
+                <div class="col-sm-9 text-dark">
+                {{user_structure.child_count}}
+                </div>
+            </div>
+            
+            
+            {% if user_structure.ref_by_user_id %}
+            <hr>
+            <div class="row">
+                <div class="col-sm-3">
+                <h6 class="mb-0">Referred By</h6>
+                </div>
+                <div class="col-sm-9 text-primary">
+                {{user_structure.ref_by_user_id.first_name}} {{user_structure.ref_by_user_id.last_name}}
+                </div>
+            </div>
+            <hr>
+            {% endif %}
                 
-                {% for child in user_structure.child_branch.all %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ child.first_name }} {{ child.last_name }}</td>
-                    <td>{{ child.mobile_no }}</td>
-                    <td>{{ child.email }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+            </div>
+        </div>
+        </div>
     </div>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>Referrals</h2>
+        </div>
+        
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Mobile No</th>
+                <th scope="col">Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for child in user_structure.child_branch.all %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ child.first_name }} {{ child.last_name }}</td>
+                <td>{{ child.mobile_no }}</td>
+                <td>{{ child.email }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    
+</div>
     <script>
         document.getElementById('shareButton').addEventListener('click', async () => {
             const uniqueId = '{{ user.unique_id }}';

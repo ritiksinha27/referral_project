@@ -4,6 +4,7 @@ from .models import CustomUser, UserStructure
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
@@ -26,7 +27,7 @@ def user_logout(request):
     logout(request)
     return redirect('home')
 
-@login_required
+@login_required(login_url='user_login')
 def user_dashboard(request):
     user_structure = UserStructure.objects.get(user_id=request.user)
     data={
@@ -84,8 +85,14 @@ def admin_login(request):
             login(request, authenticated_user)
             return redirect('admin_dash')
     return render(request, 'admin_login.html')
-
+@login_required(login_url='admin_login')
 def admin_dash(request):
+    user=request.user
+    if user.groups.filter(name='admin').exists():
+        pass
+    else:
+        messages.error(request, 'You are not admin')
+        return redirect('admin_login')
     all_str=UserStructure.objects.filter(user_id__is_superuser=False)
     data={
         'all_str':all_str,
@@ -100,3 +107,5 @@ def add_points(request,usr_str_id):
         usr_str.points+=int(points)
         usr_str.save()
         return redirect('admin_dash')
+    
+
