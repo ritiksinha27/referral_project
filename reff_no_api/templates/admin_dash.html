@@ -1,74 +1,151 @@
 {% extends 'base.html' %}
 
+{% block head %}
+<script>
+    function searchCustomer() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customerTable");
+        tr = table.getElementsByTagName("tr");
+    
+        for (i = 0; i < tr.length; i++) {
+          // Adjust the index to match the "Medicine Name" column (index 0)
+          td = tr[i].getElementsByTagName("td")[0];
+          if (td) {
+            txtValue = td.textContent || td.innerText;
+            if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+            } else {
+              tr[i].style.display = "none";
+            }
+          }
+        }
+      }
+      function searchPhone() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("searchInput2");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("customerTable");
+        tr = table.getElementsByTagName("tr");
+    
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[3];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    };
+</script>
+{% endblock head %}
+    
 {% block content %}
     <div class="container">
         <h1>
             Admin Dashboard
         </h1>
-        <h3>
+        <h3 class="text-end">
             Total Count={{ total_count }}
         </h3>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Name</th>
-                    <th scope="col">Referred By</th>
-                    <th scope="col">Mobile No</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Team Count</th>
-                    <th scope="col">Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-                {% for usr in all_str %}
-                <tr>
-                    <th scope="row">{{ usr.id }}</th>
-                    <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ usr.id }}">
-                        {{ usr.user_id.first_name }} {{ usr.user_id.last_name }}
-                    </button></td>
-                    <td>{{ usr.ref_by_user_id.first_name }} {{ usr.ref_by_user_id.last_name }}</td>
-                    <td>{{ usr.user_id.mobile_no }}</td>
-                    <td>{{ usr.user_id.email }}</td>
-                    <td>{{ usr.child_count }}</td>
-                    <td>{{ usr.points}} </td>
-                </tr>
-                
-                
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal{{ usr.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ usr.user_id.first_name }} {{ usr.user_id.last_name }}</h1>
-                        <p>Total Points: {{ usr.points }} </p>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                                {% for child in usr.child_branch.all %}
-                                <ul class="list-group list-group-horizontal">
-                                    <li class="list-group-item">{{ forloop.counter }}</li>
-                                    <li class="list-group-item">{{ child.first_name }} {{ child.last_name }}</li>
-                                    <li class="list-group-item">{{ child.mobile_no }}</li>
-                                    <li class="list-group-item">{{ child.email }}</li>
-                                </ul>
-                                {% endfor %}
-                        </div>
-                        <div class="modal-footer">
-                            <form action="{% url 'add_points' usr.id %}" method="post">
-                                {% csrf_token %}
-                                <label for="points">Add Points</label>
-                                <input type="number" name="points" id="points">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary">Add</button>
-                            </form>
-                        </div>
-                    </div>
-                    </div>
+        <div class="card">
+
+        
+            <!-- Search Bar  -->
+            <div class="row m-3">
+                <div class="col">
+                <input
+                    type="text"
+                    class="form-control"
+                    id="searchInput"
+                    onkeyup="searchCustomer()"
+                    placeholder="Search by Customer Name"
+                />
                 </div>
-                {% endfor %}
-            </tbody>
-        </table>
+                <div class="col">
+                    <input
+                    class="form-control"
+                    type="text"
+                    id="searchInput2"
+                    onkeyup="searchPhone()"
+                    placeholder="Search by phone number"
+                    />
+                </div>
+            <!-- Search Bar End  -->
+            </div>
+            <h4>
+                Members List
+            </h4>
+            <table class="table" id="customerTable">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">DateTime</th>
+                        <th scope="col">Referred By</th>
+                        <th scope="col">Mobile No</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Team Count</th>
+                        <th scope="col">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    {% for usr in all_str %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ usr.id }}">
+                            {{ usr.user_id.first_name }} {{ usr.user_id.last_name }}
+                        </button></td>
+                        <td>{{ usr.user_id.created_at }}</td>
+                        <td>{{ usr.ref_by_user_id.first_name }} {{ usr.ref_by_user_id.last_name }}</td>
+                        <td>{{ usr.user_id.mobile_no }}</td>
+                        <td>{{ usr.user_id.email }}</td>
+                        <td>{{ usr.child_count }}</td>
+                        <td>{{ usr.points}} </td>
+                    </tr>
+                    
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal{{ usr.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{ usr.user_id.first_name }} {{ usr.user_id.last_name }}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            
+                        </div>
+                        <p class="text-center"><b>Total Points: {{ usr.points }} </b></p>
+                            <div class="modal-body">
+                                <h4>Refers</h4>
+                                    {% for child in usr.child_branch.all %}
+                                    <ul class="list-group list-group-horizontal">
+                                        <li class="list-group-item">{{ forloop.counter }}</li>
+                                        <li class="list-group-item">{{ child.first_name }} {{ child.last_name }}</li>
+                                        <li class="list-group-item">{{ child.mobile_no }}</li>
+                                        <li class="list-group-item">{{ child.email }}</li>
+                                    </ul>
+                                    {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{% url 'add_points' usr.id %}" method="post">
+                                    {% csrf_token %}
+                                    <label for="points">Add Points</label>
+                                    <input type="number" name="points" id="points">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add</button>
+                                </form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock content %}

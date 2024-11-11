@@ -1,55 +1,147 @@
 {% extends 'base.html' %}
+{% load static %}
+{% block head %}
+<style>
+  /* Hide arrows in input of type number */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+  }
 
+  input[type="number"] {
+      -moz-appearance: textfield;
+  }
+
+  /*For password-validation checks */
+  .password-requirements .requirement {
+      color: grey;
+      display: flex;
+      align-items: center;
+  }
+
+  .password-requirements .requirement.valid {
+      color: green;
+  }
+
+  .password-requirements .requirement.invalid {
+      color: red;
+  }
+
+  .small-text {
+      display: none;
+      color: gray;
+      font-size: 0.875rem;
+  }
+
+  .checkmark {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      border-radius: 50%;
+      border: 2px solid grey;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+  }
+
+  .checkmark::before {
+      content: "";
+      display: none;
+  }
+
+  .requirement.valid .checkmark::before {
+      content: "✔";
+      display: block;
+  }
+
+</style>
+{% endblock head %}
+  
 {% block content %}
 <div class="container mt-5">
     <h2>Create Account</h2>
     
     {% if ref_user %}
-    <h4>Reffered by : {{ref_user}}</h4>
+    <h4>Referred by : {{ref_user}}</h4>
     {% endif %}
-        
 
     <form method="post">
         {% csrf_token %}
-      <!-- Username Field -->
-      <div class="mb-3">
-        <label for="username" class="form-label">Username<span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="username" name="username" required maxlength="255">
-      </div>
+        <!-- Username Field -->
+        <div class="mb-3">
+          <label for="username" class="form-label">Username<span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="username" name="username" required maxlength="255">
+          <p class="text-danger" id="usernameError" style="display: none;">Username already taken</p>
+        </div>
 
-      <!-- First Name Field -->
-      <div class="mb-3">
-        <label for="first_name" class="form-label">First Name<span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="first_name" name="first_name" required maxlength="255">
-      </div>
+        <!-- First Name Field -->
+        <div class="mb-3">
+            <label for="first_name" class="form-label">First Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="id_first_name" name="first_name" required maxlength="255">
+            <small class="text-danger" id="firstNameError" style="display: none;">Only letters are allowed for First Name</small>
+        </div>
 
-      <!-- Last Name Field -->
-      <div class="mb-3">
-        <label for="last_name" class="form-label">Last Name<span class="text-danger">*</span></label>
-        <input type="text" class="form-control" id="last_name" name="last_name" required maxlength="255">
-      </div>
+        <!-- Last Name Field -->
+        <div class="mb-3">
+            <label for="last_name" class="form-label">Last Name<span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="id_last_name" name="last_name" required maxlength="255">
+        </div>
 
-      <!-- Email Field -->
-      <div class="mb-3">
-        <label for="email" class="form-label">Email Address </label>
-        <input type="email" class="form-control" id="email" name="email" required maxlength="255">
-      </div>
+        <!-- Email Field -->
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address <span class="text-danger">*</span> </label>
+            <input type="email" class="form-control" id="id_email_id" name="email" required maxlength="255">
+        </div>
+        <p class="text-danger" id="emailError" style="display: none;">Please enter a valid email address</p>
 
-      <!-- Mobile No Field -->
-      <div class="mb-3">
-        <label for="mobile_no" class="form-label">Mobile Number <span class="text-danger">*</span></label>
-        <input type="tel" class="form-control" id="mobile_no" name="mobile_no" required maxlength="255">
-      </div>
+        <!-- Mobile No Field -->
+        <div class="mb-3">
+          <label for="mobile_no" class="form-label">Mobile Number <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="id_mobile_no" name="mobile_no" required maxlength="255">
+          <p class="text-danger" id="mobileError" style="display: none;">Mobile Number Already Registered</p>
+        </div>
 
-      <!-- Password Field -->
-      <div class="mb-3">
-        <label for="password" class="form-label">Password<span class="text-danger">*</span></label>
-        <input type="password" class="form-control" id="password" name="password" required maxlength="255">
-      </div>
-
-      <!-- Submit Button -->
-      <button type="submit" class="btn btn-primary">Submit</button>
+        <!-- Password Field -->
+        <div class="mb-3">
+            <label for="password" class="form-label">Password<span class="text-danger">*</span></label>
+            <input type="password" class="form-control" id="id_password" name="password" required maxlength="255">
+        </div>
+        <div class="password-requirements mt-2" id="password-requirements">
+          <div id="password-length" class="requirement">
+              <span class="checkmark"></span> Password must be at least 8 characters long
+          </div>
+          <div id="password-uppercase" class="requirement">
+              <span class="checkmark"></span> Contains uppercase letter (A-Z)
+          </div>
+          <div id="password-lowercase" class="requirement">
+              <span class="checkmark"></span> Contains lowercase letter (a-z)
+          </div>
+          <div id="password-number" class="requirement">
+              <span class="checkmark"></span> Contains digit (0-9)
+          </div>
+          <div id="password-special" class="requirement">
+              <span class="checkmark"></span> Contains special character (!@#$%^&*)
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="id_confirm_password" class="form-label">Confirm Password:</label>
+          <input type="password" name="confirm_password" id="id_confirm_password" class="form-control" />
+          <div class="password-feedback">
+              <div class="invalid-feedback" id="confirm-password-error">Passwords do not match.</div>
+              <div class="valid-feedback" id="confirm-password-match">Passwords match.</div>
+          </div>
+        </div>
+        <div class="mt-2 text-center">
+                <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+  
     </form>
-  </div>
+</div>
+<script src="{% static 'js/user_register.js' %}"></script>
+
+
 {% endblock content %}
-    

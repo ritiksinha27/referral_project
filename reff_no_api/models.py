@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
     mobile_no= models.CharField(max_length=255, unique=True)
     password= models.CharField(max_length=255)
     unique_id= models.CharField(max_length=255, unique=True)
-    
+    created_at= models.DateTimeField(auto_now_add=True)
     objects= CustomUserManager()
     
     USERNAME_FIELD = 'username'

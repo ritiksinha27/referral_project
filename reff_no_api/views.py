@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
+from django.http import JsonResponse
 # Create your views here.
 def home(request):
     return render(request, 'home.html')
@@ -93,7 +94,7 @@ def admin_dash(request):
     else:
         messages.error(request, 'You are not admin')
         return redirect('admin_login')
-    all_str=UserStructure.objects.filter(user_id__is_superuser=False)
+    all_str=UserStructure.objects.filter(user_id__is_superuser=False).order_by('-id')
     data={
         'all_str':all_str,
         'total_count':all_str.count()
@@ -109,3 +110,16 @@ def add_points(request,usr_str_id):
         return redirect('admin_dash')
     
 
+def username_validate(request, usr_name):
+    usern = CustomUser.objects.filter(username=usr_name).exists()
+    if usern:
+        return JsonResponse({'is_valid': False})
+    else:
+        return JsonResponse({'is_valid': True})
+
+def mobile_validate(request, mob_no):
+    mob = CustomUser.objects.filter(mobile_no=mob_no).exists()
+    if mob:
+        return JsonResponse({'is_valid': False})
+    else:
+        return JsonResponse({'is_valid': True})

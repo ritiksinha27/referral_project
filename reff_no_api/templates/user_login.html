@@ -1,8 +1,13 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block content %}
 <div class="container " style="height: 50vh;">
-      <form method="post" >
+  <div class="row mobile-view">
+    <div class="col">
+      <img src="{% static 'images/logo.jpg' %}" style="width: 100%;" alt="">
+    </div>
+    <div class="col">
+      <form method="post" class="mt-4" >
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
         {% csrf_token %}
         <div class="form-floating mb-3">
@@ -15,5 +20,7 @@
         </div>
         <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
       </form>
+    </div>
   </div>
+</div>
 {% endblock %}

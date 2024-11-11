@@ -10,15 +10,7 @@
 .about-us{
     font-size: larger;
 }
-@media screen and (max-width: 1024px) {
-    .about-us{
-        font-size: small;
-    }
-    .mobile-view{
-        display: contents !important; 
-    }
-    
-}
+
 .pad-3rm{
     padding: 3rem;
 }
@@ -71,4 +63,20 @@
 }
 .shadow-none {
     box-shadow: none!important;
+}
+
+@media screen and (max-width: 1024px) {
+    .about-us{
+        font-size: small;
+    }
+    .mobile-view{
+        display: block !important; 
+    }
+    .logo{
+        font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        font-size: larger;
+    }
+    .footer-links-mobile{
+        text-align: center;
+    }
 }

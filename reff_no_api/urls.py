@@ -11,4 +11,6 @@ urlpatterns = [
    path('admin_login/',admin_login, name='admin_login'),
    path('admin_dash/',admin_dash, name='admin_dash'),
    path('add_points/<int:usr_str_id>/',add_points, name='add_points'),
+   path('valid_user/<str:usr_name>/',username_validate, name='valid_user'),
+   path('valid_mob/<str:mob_no>/',mobile_validate, name='valid_mob'),
 ]
