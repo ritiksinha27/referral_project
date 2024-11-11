@@ -7,12 +7,24 @@
     }    
 }
 
+.about-us{
+    font-size: larger;
+}
+@media screen and (max-width: 1024px) {
+    .about-us{
+        font-size: small;
+    }
+    .mobile-view{
+        display: contents !important; 
+    }
+    
+}
 .pad-3rm{
     padding: 3rem;
 }
 
 .logo{
-    font-family: fantasy;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     font-size: xx-large;
 }
 
