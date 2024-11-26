@@ -123,3 +123,8 @@ def mobile_validate(request, mob_no):
         return JsonResponse({'is_valid': False})
     else:
         return JsonResponse({'is_valid': True})
+
+def delete_user(request,usr_id):
+    user=CustomUser.objects.get(id=usr_id)
+    user.delete()
+    return redirect('admin_dash')
