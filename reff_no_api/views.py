@@ -126,5 +126,7 @@ def mobile_validate(request, mob_no):
 
 def delete_user(request,usr_id):
     user=CustomUser.objects.get(id=usr_id)
+    if user.groups.filter(name='admin').exists():
+        return redirect('admin_dash')
     user.delete()
     return redirect('admin_dash')
