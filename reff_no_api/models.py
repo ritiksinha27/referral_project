@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
         super().save(*args, **kwargs)
 class UserStructure(models.Model):
     user_id= models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    ref_by_user_id= models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='ref_by_user_id', blank=True, null=True)
+    ref_by_user_id= models.ForeignKey(CustomUser, on_delete=models.PROTECT, related_name='ref_by_user_id', blank=True, null=True)
     points= models.IntegerField(default=0)
     child_branch=models.ManyToManyField(CustomUser, related_name='child_branch', blank=True)
 
